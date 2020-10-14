@@ -39,6 +39,13 @@ client.connect(err => {
             })
     })
 
+    app.get('/getAdminEmails', (req, res) => { //---------------- get admin emails
+        admin_email_collection.find({})
+            .toArray((err, documents) => {
+                res.send(documents)
+            })
+    })
+
     app.post('/checkingWhoYouAre' , (req, res)=>{
         admin_email_collection.find({email: req.body.email})
             .toArray((err, documents) => {
@@ -57,6 +64,18 @@ client.connect(err => {
             })
     })
 
+    app.delete('/deleteItem/:id', (req, res) => { // --------------------- admin can delete a service
+        service_collection.find({ _id: ObjectId(req.params.id) })
+            .toArray((err, documents) => {
+                if (documents.length > 0) {
+                    service_collection.deleteOne({ _id: ObjectId(req.params.id) })
+                        .then(result => {
+                            res.send(result.deletedCount > 0)
+                        })
+                }
+            })
+    })
+
     app.get('/getAllOrder', (req, res) => { //---------------- getAllOrder
         order_collection.find({})
             .toArray((err, documents)=>{
@@ -65,7 +84,6 @@ client.connect(err => {
     })
 
     app.patch('/updateStatus', (req,res)=>{ //---------------- updateStatus
-        console.log(req.body)
         order_collection.updateOne(
             {_id : ObjectId(req.body.id)},
             {
@@ -74,10 +92,10 @@ client.connect(err => {
             }
         )
         .then(result =>{
-            console.log(result)
             res.send(result.modifiedCount > 0)
         })
     })
+
 
     // ---------- API FOR USER -----------------
 
