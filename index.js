@@ -26,27 +26,31 @@ client.connect(err => {
     const review_collection = client.db("db_creative_agency").collection("coll_reviews");
     console.log("db connected")
 
-    app.post('/addNewService', (req, res) => { //---------------- addNewService
+
+    //---------- total 12 apis --------
+
+
+    app.post('/addNewService', (req, res) => { //---------------- add New Service
         service_collection.insertOne(req.body)
             .then(result => {
                 res.send(result.insertedCount > 0)
             })
     })
-    app.post('/addNewAdmin', (req, res) => { // ------------------ addNewAdmin
+    app.post('/addNewAdmin', (req, res) => { // ------------------ add New Admin
         admin_email_collection.insertOne(req.body)
             .then(result => {
                 res.send(result.insertedCount > 0)
             })
     })
 
-    app.get('/getAdminEmails', (req, res) => { //---------------- get admin emails
+    app.get('/getAdminEmails', (req, res) => { //---------------- get all admin emails
         admin_email_collection.find({})
             .toArray((err, documents) => {
                 res.send(documents)
             })
     })
 
-    app.post('/checkingWhoYouAre' , (req, res)=>{
+    app.post('/checkingWhoYouAre' , (req, res)=>{ //---------------- checking Who You Are - admin or not
         admin_email_collection.find({email: req.body.email})
             .toArray((err, documents) => {
                 if(documents.length > 0){
@@ -57,7 +61,7 @@ client.connect(err => {
             })
     })
 
-    app.get('/getService', (req, res) => { //---------------- get Service
+    app.get('/getService', (req, res) => { //---------------- get all Service
         service_collection.find({})
             .toArray((err, documents) => {
                 res.send(documents)
@@ -76,14 +80,14 @@ client.connect(err => {
             })
     })
 
-    app.get('/getAllOrder', (req, res) => { //---------------- getAllOrder
+    app.get('/getAllOrder', (req, res) => { //---------------- get All Orders
         order_collection.find({})
             .toArray((err, documents)=>{
                 res.send(documents)
             })
     })
 
-    app.patch('/updateStatus', (req,res)=>{ //---------------- updateStatus
+    app.patch('/updateStatus', (req,res)=>{ //---------------- update Status
         order_collection.updateOne(
             {_id : ObjectId(req.body.id)},
             {
@@ -100,26 +104,26 @@ client.connect(err => {
     // ---------- API FOR USER -----------------
 
 
-    app.post('/placeOrder', (req, res) => { //---------------- placeOrder
+    app.post('/placeOrder', (req, res) => { //----------------user place Order
         order_collection.insertOne(req.body)
             .then(result => {
                 res.send(result.insertedCount > 0)
             })
     })
 
-    app.post('/addReview', (req, res) => { //---------------- add Review
+    app.post('/addReview', (req, res) => { //---------------- user add Review
         review_collection.insertOne(req.body)
             .then(result => {
                 res.send(result.insertedCount > 0)
             })
     })
-    app.get('/allReview', (req, res) => { //---------------- all Review
+    app.get('/allReview', (req, res) => { //---------------- showing all user Review
         review_collection.find({})
             .toArray((err, documents) => {
                 res.send(documents)
             })
     })
-    app.post('/getOrderedItems' , (req, res) => { //---------------- getOrderedItems
+    app.post('/getOrderedItems' , (req, res) => { //---------------- get a users Ordered Items by email
         order_collection.find({email: req.body.email})
             .toArray((err, documents) =>{
                 res.send(documents);
